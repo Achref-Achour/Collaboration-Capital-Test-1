@@ -1,0 +1,82 @@
+<div class="row">
+    <div class="col-md-6"><p>Current selected Step:  <b>{{currentStep}}</b></p></div>
+    <div class="col-md-6"><p>Total Price:<b> {{totalPrice}}$</b></p></div>
+</div>
+<div class="step-cadre" *ngIf="step == 1">
+    <form (ngSubmit)="onSubmit()" #step1Form="ngForm">
+        <div>
+            <label for="duration">Duration (months):</label>
+            <select class="form-element" id="duration" name="duration" [(ngModel)]="subscription.duration" required (ngModelChange)="updatePrice()">
+            <option *ngFor="let plan of subscriptionPlans" [value]="plan.duration_months">{{plan.duration_months}}</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="amount">Amount of gigabytes in a cloud:</label>
+            <select class="form-element" id="amount" name="amount" [(ngModel)]="subscription.amount" required (ngModelChange)="updatePrice()">
+            <option value="5">5 GB</option>
+            <option value="10">10 GB</option>
+            <option value="50">50 GB</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="upfrontPayment">Upfront payment:</label>
+            <input class="form-element" type="checkbox" id="upfrontPayment" name="upfrontPayment" [(ngModel)]="subscription.upfrontPayment" (ngModelChange)="updatePrice()" >
+        </div>
+        <div class="align-right">
+            <button class="btn btn-primary" type="button" (click)="NextStep()" [disabled]="step1Form.invalid">Next</button>
+
+        </div>
+      </form>
+        
+</div>
+<div class="step-cadre" *ngIf="step == 2">
+    <form #step2Form="ngForm">
+        <div class="form-group">
+          <label for="cardNumber">Credit card number</label>
+          <input type="text" class="form-control" id="cardNumber" name="cardNumber" required [(ngModel)]="payment.cardNumber">
+        </div>
+        <div class="form-group">
+          <label for="expirationDate">Expiration date</label>
+          <input type="text" class="form-control" id="expirationDate" name="expirationDate" required [(ngModel)]="payment.expirationDate">
+        </div>
+        <div class="form-group">
+          <label for="securityCode">Security code</label>
+          <input type="text" class="form-control" id="securityCode" name="securityCode" required [(ngModel)]="payment.securityCode">
+        </div><br>
+        <div class="space-between">
+            <button type="button" class="btn btn-secondary" (click)="PrevStep()">Back</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!step2Form.form.valid" (click)="NextStep()">Next</button>
+        </div>
+        
+      </form>
+</div>
+<div class="step-cadre" *ngIf="step == 3">
+    <div class="summary">
+        <h3>Subscription Summary</h3>
+        <p><strong>Duration:</strong> {{ subscription.duration }} months</p>
+        <p><strong>Storage:</strong> {{ subscription.amount }} GB</p>
+        <p><strong>Upfront Payment:</strong> {{ subscription.upfrontPayment ? 'Yes' : 'No' }}</p>
+        <p><strong>Total Price:</strong> {{ totalPrice | currency:'USD':'symbol' }}</p>
+        <p><strong>Price per GB:</strong> {{ pricePerGB | currency:'USD':'symbol' }}</p>
+      </div>
+
+    <form #step3Form="ngForm">
+        <div class="form-group">
+          <label for="exampleInputEmail1">Email address</label>
+          <input type="email" [(ngModel)]="email" class="form-control" name="email" placeholder="Enter email" required>
+        </div>
+        <label class="terms">
+            <input type="checkbox" [(ngModel)]="termsAccepted" name="termsAccepted" required>
+            I agree to the terms and conditions.
+        </label>
+        <div class="space-between">
+            <button class="btn btn-secondary" (click)="PrevStep()">Précedent</button>
+            <button class="btn btn-primary" [disabled]="!step3Form.form.valid"(click)="onSubmit()" >Confirm</button>
+        </div>
+           
+            <!-- <button  class="btn btn-primary right" (click)="NextStep()">Suivant</button> -->
+        
+      </form>
+</div>
